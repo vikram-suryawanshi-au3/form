@@ -4,15 +4,17 @@ import './App.css';
 // import Form from './components/Form'
 // import Navbar from './components/Navebar'
 import PersistentDrawerLeft from './components/MaterialNavbar'
+import PrimarySearchAppBar from './components/Navbar'
 
 
 
 function App() {
   return (
-    <div className="container-fluid">
+    <div >
       {/* <Navbar/>
       <Form/> */}
-      <PersistentDrawerLeft/>
+      <PrimarySearchAppBar/>
+      
     </div>
   );
 }

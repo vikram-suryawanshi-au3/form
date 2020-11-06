@@ -2,9 +2,9 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import clsx from 'clsx';
+// import OutlinedInput from '@material-ui/core/OutlinedInput';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+// import clsx from 'clsx';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -16,7 +16,8 @@ import Avatar from '@material-ui/core/Avatar';
 import Switch from '@material-ui/core/Switch';
 import { withStyles } from '@material-ui/styles';
 
-
+import SelectTimezoneMaterialUi from "select-timezone-material-ui";
+// import SelectTimezoneMaterialUi from "input-material-ui";
 
 
 
@@ -43,26 +44,59 @@ const styles = theme => ({
       // marginLeft: theme.spacing(1),
       // marginRight: theme.spacing(1),
       width: 200,
+      marginRight:20
+    },
+    timezone:{
+      width:600
     },
     margin:{
-      marginRight:30
+      marginRight:20
     }
 });
 
 
 class BasicTextFields extends React.Component {
   state = {
+
     event:'',
     upload:[],
+    title:'',
     category:'',
     summary:'',
     regState:'',
     isVirtual:false,
     link:'',
+    timezone:'',
     startDate:'',
     startTime:'',
     endDate:'',
     endTime:'',
+    dropZoneArea:[]
+  }
+
+  submit(){
+    let {event,title,category,summary,timezone,startDate,startTime,endDate,endTime} = this.state
+    if(event === ''){
+      alert('Please Select Event')
+    }else if(title===''){
+      alert('Please Add Title')
+    }else if(category===''){
+      alert('Please Select Catagory')
+    }else if(summary===''){
+      alert('Please Add Summary')
+    }else if(timezone===''){
+      alert('Please Add Timezone')
+    }else if(startDate===''){
+      alert('Please Select Start Date')
+    }else if(startTime===''){
+      alert('Please Select Start Time')
+    }else if(endDate===''){
+      alert('Please Select End Date')
+    }else if(endTime===''){
+      alert('Please Select End Time')
+    }else{
+      alert('Submitted form successfully')
+    }
   }
 
   handleChange(event){
@@ -70,6 +104,19 @@ class BasicTextFields extends React.Component {
       [event.target.name]: event.target.value}
       )
   }
+
+  handleChangeUpload(event){
+    this.setState({
+      [event.target.name]: event.target.files[0]}
+      )
+  }
+
+  handleTimezone(event){
+    this.setState({
+      timezone: event
+    })
+  }
+  
 
   render(){
   const {classes} = this.props;
@@ -81,29 +128,33 @@ class BasicTextFields extends React.Component {
     <h3 style={{color:'purple'}}>Create Event</h3>
     <div style={{display:'flex', marginRight:'15'}}>
 
-    <Button variant="contained" color="primary" size="small" className={classes.margin}>
+    <Button variant="contained" color="primary" size="small"
+    type="submit" className={classes.margin} onClick={() => {this.submit()}}>
         Create
-      </Button>
-      <Button variant="contained" color="default" size="small" className={classes.margin}>
-        Cancel
-      </Button>
+    </Button>
+    <Button variant="contained" color="default" size="small" className={classes.margin}>
+      Cancel
+    </Button>
+
     </div>
     
     </div>
     <form className="container mt-5">
       <FormControl fullWidth>
       {/* <FormControl className={classes.formControl} fullWidth> */}
-        <InputLabel shrink htmlFor="age-native-label-placeholder">
-          Add event in *
+        <InputLabel shrink htmlFor="age-native-label-placeholder" required>
+          Add event in
         </InputLabel>
         <NativeSelect
           inputProps={{
-            name: 'age',
+            name: 'event',
             id: 'age-native-label-placeholder',
           }}
+          value={this.state.event}
+          onChange={(e)=>{this.handleChange(e)}}
         >
-          <option value="">Select...</option>
-          <option value={10}>Ten</option>
+          <option value="" >Select...</option>
+          <option value={10} >Ten</option>
           <option value={20}>Twenty</option>
           <option value={30}>Thirty</option>
         </NativeSelect>
@@ -119,7 +170,9 @@ class BasicTextFields extends React.Component {
         Upload Image
         <input
           type="file"
+          name="upload"
           style={{ display: "none" }}
+          onChange={(e) => {this.handleChangeUpload(e)}}
           
         />
       </Button>
@@ -127,14 +180,17 @@ class BasicTextFields extends React.Component {
       <br></br>
 
       <ThemeProvider theme={theme}>
-        <Typography variant="subtitle1">Title *</Typography>
+        <Typography variant="subtitle1">Title</Typography>
         <TextField
           id="standard-full-width"
           name="title"
-          helperText={`0/250`}
+          label="Title"
+          helperText={`${this.state.title.length}/250`}
           fullWidth
           error = {1 == false ? true : false}
-          inputProps={{ maxLength: 2 }}
+          inputProps={{ maxLength: 250 }}
+          onChange={(e)=>{this.handleChange(e)}}
+          required
         />
       </ThemeProvider>
       <br></br>
@@ -142,16 +198,17 @@ class BasicTextFields extends React.Component {
 
       <FormControl fullWidth>
       {/* <FormControl className={classes.formControl} fullWidth> */}
-        <InputLabel shrink htmlFor="age-native-label-placeholder">
-          categories *
+        <InputLabel shrink htmlFor="age-native-label-placeholder" required>
+          categories
         </InputLabel>
         <NativeSelect
-          //value={state.age}
-          //onChange={handleChange}
+          value={this.state.category}
+          onChange={(e)=>{this.handleChange(e)}}
           inputProps={{
-            name: 'age',
+            name: 'category',
             id: 'age-native-label-placeholder',
           }}
+          required
         >
           <option value="">Select...</option>
           <option value={10}>Ten</option>
@@ -164,15 +221,16 @@ class BasicTextFields extends React.Component {
       <br></br>
 
       <ThemeProvider theme={theme}>
-        <Typography variant="subtitle1">Short summary *</Typography>
+        <Typography variant="subtitle1" required>Short summary</Typography>
         <TextField
           id="standard-full-width"
-          name="title"
-          helperText={`0/250`}
+          name="summary"
+          onChange={(e)=>{this.handleChange(e)}}
+          helperText={`${this.state.summary.length}/250`}
           fullWidth
-          error = {1 == false ? true : false}
-          
-          inputProps={{ maxLength: 2 }}
+          //error = {1 == false ? true : false}
+          //error={text === "hello"}
+          inputProps={{ maxLength: 250 }}
         />
       </ThemeProvider>
 
@@ -187,9 +245,10 @@ class BasicTextFields extends React.Component {
 
         <TextField
           id="standard-full-width"
-          name="title"
+          name="regState"
           label="Registration State"
-          helperText={`0/1024`}
+          onChange={(e)=>{this.handleChange(e)}}
+          helperText={`${this.state.regState.length}/1024`}
           fullWidth
           error = {1 == false ? true : false}
           inputProps={{ maxLength: 1024 }}
@@ -204,10 +263,10 @@ class BasicTextFields extends React.Component {
 
       <Typography variant="subtitle1">Is this a virtual event ?</Typography>
       <Switch
-        // checked={state.checkedB}
-        // onChange={handleChange}
+        //checked={this.state.isVirtual}
+        name="isVirtual"
+        onChange={(e)=>{this.setState({isVirtual: !this.state.isVirtual})}}
         color="primary"
-        name="checkedB"
         inputProps={{ 'aria-label': 'primary checkbox' }}
       />
       </div>
@@ -215,13 +274,26 @@ class BasicTextFields extends React.Component {
       <br></br>
       <br></br>
 
-<TextField
+      <TextField
           id="standard-full-width"
-          name="title"
+          name="link"
           placeholder="Online Link"
           fullWidth
           error = {1 == false ? true : false}
+          onChange={(e)=>{this.handleChange(e)}}
         />
+      <br></br>
+      <br></br>
+
+      <SelectTimezoneMaterialUi
+          label="Select timezone *"
+          name="timezone"
+          helpertext="Please select a timezone from the list"
+          required
+          onChange={(e)=>{this.handleTimezone(e)}}
+          className={classes.timezone}
+        />
+      
       <br></br>
       <br></br>
 
@@ -235,6 +307,8 @@ class BasicTextFields extends React.Component {
         InputLabelProps={{
           shrink: true,
         }}
+        name="startDate"
+        onChange={(e)=>{this.handleChange(e)}}
       />
         <TextField
         id="time"
@@ -248,6 +322,8 @@ class BasicTextFields extends React.Component {
         inputProps={{
           step: 300, // 5 min
         }}
+        name="startTime"
+        onChange={(e)=>{this.handleChange(e)}}
       />
       </div>
       <br></br>
@@ -262,6 +338,8 @@ class BasicTextFields extends React.Component {
         InputLabelProps={{
           shrink: true,
         }}
+        name="endDate"
+        onChange={(e)=>{this.handleChange(e)}}
       />
         <TextField
         id="time"
@@ -275,12 +353,15 @@ class BasicTextFields extends React.Component {
         inputProps={{
           step: 300, // 5 min
         }}
+        name="endTime"
+        onChange={(e)=>{this.handleChange(e)}}
       />
       </div>
       <br></br>
       
-      <DropzoneArea/>
-
+      
+      <DropzoneArea name="dropZoneArea" onChange={(e)=>{this.setState({dropZoneArea:e})}}/>
+      
 
     </form>
     </div>
